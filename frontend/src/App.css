@@ -1,0 +1,74 @@
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  margin: 0;
+  background: linear-gradient(to right, #f0f4f8, #e8f0fe);
+  color: #333;
+}
+
+.container {
+  max-width: 900px;
+  margin: auto;
+  padding: 20px;
+}
+
+h1 {
+  text-align: center;
+  color: #1a73e8;
+}
+
+.card {
+  background: white;
+  border: none;
+  border-radius: 10px;
+  padding: 16px 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.06);
+}
+
+h3, h4 {
+  color: #1a73e8;
+}
+
+button {
+  background: #1a73e8;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 6px 12px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+button:hover {
+  background: #0c5bd7;
+}
+
+input[type="text"], input[type="checkbox"] {
+  padding: 6px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.skill-tag {
+  padding: 6px 10px;
+  background: #e1f5fe;
+  border-radius: 20px;
+  font-size: 14px;
+  color: #0277bd;
+  margin: 4px;
+  display: inline-block;
+}
+
+.user-item {
+  padding: 10px;
+  background: #f9f9f9;
+  margin-bottom: 6px;
+  border-radius: 6px;
+}
+
+.match-item {
+  padding: 10px;
+  background: #fff3e0;
+  margin-bottom: 6px;
+  border-radius: 6px;
+}

@@ -1,0 +1,62 @@
+version: '3.8'
+services:
+  db:
+    image: postgres:15
+    container_name: postgres_db
+    environment:
+      POSTGRES_USER: skilluser
+      POSTGRES_PASSWORD: skillpass
+      POSTGRES_DB: skilldb
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  cache:
+    image: redis:7
+    container_name: redis_cache
+    ports:
+      - "6379:6379"
+
+  search:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.13.0
+    container_name: elasticsearch
+    environment:
+      - discovery.type=single-node
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+    ports:
+      - "9200:9200"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+
+  backend:
+    build: ./backend
+    container_name: backend_app
+    ports:
+      - "5000:5000"
+    environment:
+      DB_HOST: db
+      DB_USER: skilluser
+      DB_PASS: skillpass
+      DB_NAME: skilldb
+      REDIS_HOST: cache
+      ELASTIC_HOST: search
+    depends_on:
+      - db
+      - cache
+      - search
+
+  frontend:
+    build: ./frontend
+    container_name: frontend_app
+    ports:
+      - "3000:3000"
+    environment:
+      REACT_APP_API_URL: http://localhost:5000
+    depends_on:
+      - backend
+
+volumes:
+  pgdata:

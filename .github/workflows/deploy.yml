@@ -50,3 +50,26 @@ jobs:
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
 
+
+
+    - name: Deploy to EC2
+      uses: appleboy/ssh-action@v1.0.3
+      with:
+        host: ${{ secrets.EC2_HOST }}
+        username: "ec2-user"
+        key: ${{ secrets.EC2_SSH_KEY }}
+        script: |
+          # Login to ECR on the EC2 host
+          aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin 116715029140.dkr.ecr.ap-south-1.amazonaws.com
+          
+          # Navigate to project directory (where docker-compose.yml lives)
+          cd ~/personal-project
+          
+          # Pull latest images
+          docker compose pull
+          
+          # Re-create containers with the new images
+          docker compose up -d
+          
+          # Optional: Clean up old dangling images to save space
+          docker image prune -f

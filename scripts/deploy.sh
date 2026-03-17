@@ -1,10 +1,10 @@
 #!/bin/bash
 
 # Variables
-REGISTRY="116715029140.dkr.ecr.ap-south-1.amazonaws.com"
+REGISTRY="public.ecr.aws/v2d4y3y5"
 REPO="personal-projects"
-BACKEND_IMAGE="$REGISTRY/$REPO-backend:latest"
-FRONTEND_IMAGE="$REGISTRY/$REPO-frontend:latest"
+BACKEND_IMAGE="$REGISTRY/$REPO:backend-latest"
+FRONTEND_IMAGE="$REGISTRY/$REPO:frontend-latest"
 
 # Login to ECR
 aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin $REGISTRY

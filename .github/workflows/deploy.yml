@@ -1,40 +1,53 @@
-name: CI/CD Pipeline
+name: Build and Push Multi-Service to ECR
 
 on:
   push:
-    branches: [ main ]
+    branches: [ "main" ]
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    steps:
-      - name: Deploy to EC2
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ec2-user  # Updated for Amazon Linux
-          key: ${{ secrets.EC2_SSH_KEY }}
-          script: |
-            # Navigate to app directory
-            echo "Changing directory"
+    env:
+      AWS_REGION: ${{ secrets.AWS_REGION }}
 
-            cd ~/community-skill-exchange
-            
-            # If repo doesn't exist, clone it; else pull
-            echo "Checking git and pulling changes"
-            if [ ! -d ".git" ]; then
-              git clone https://github.com/${{ github.repository }}.git .
-            else
-              git pull origin main
-            fi
-            
-            echo "Starting docker containers."
-            if [ -n "$(docker-compose ps -q --status running)" ]; then
-                echo "Containers are running. Restarting with build..."
-                docker-compose down
-                docker-compose up --build -d
-            else
-                echo "No containers running. Starting fresh..."
-                docker-compose up -d
-            fi
-            
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_ID }}
+        aws-region: ${{ env.AWS_REGION }}
+
+    - name: Login to Amazon ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v2
+
+
+    # --- BACKEND BUILD & PUSH ---
+
+    - name: Build and Push Backend
+      env: 
+        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        ECR_REPOSITORY: ${{secrets.ECR_BACKEND_REPO }}
+        IMAGE_TAG: backend-${{ github.sha }}
+      run: 
+        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG ./backend
+        docker tag $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG $ECR_REGISTRY/$ECR_REPOSITORY:latest
+        docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+        docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
+
+    # --- FRONTEND BUILD & PUSH ---
+    - name: Build and Push Frontend
+      env: 
+        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        ECR_REPOSITORY: ${{ secrets.ECR_FRONTEND_REPO }}
+        IMAGE_TAG: frontend-${{ github.sha }}
+      run: 
+        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG ./frontend
+        docker tag $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG $ECR_REGISTRY/$ECR_REPOSITORY:latest
+        docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+        docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
+

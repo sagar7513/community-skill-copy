@@ -30,8 +30,8 @@ jobs:
 
     - name: Build and Push Backend
       env: 
-        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-        ECR_REPOSITORY: ${{secrets.ECR_BACKEND_REPO }}
+        ECR_REGISTRY: "116715029140.dkr.ecr.ap-south-1.amazonaws.com"
+        ECR_REPOSITORY: "personal-projects"
         IMAGE_TAG: backend-${{ github.sha }}
       run: 
         docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG ./backend
@@ -42,8 +42,8 @@ jobs:
     # --- FRONTEND BUILD & PUSH ---
     - name: Build and Push Frontend
       env: 
-        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-        ECR_REPOSITORY: ${{ secrets.ECR_FRONTEND_REPO }}
+        ECR_REGISTRY: "116715029140.dkr.ecr.ap-south-1.amazonaws.com"
+        ECR_REPOSITORY: "personal-projects"
         IMAGE_TAG: frontend-${{ github.sha }}
       run: 
         docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG ./frontend

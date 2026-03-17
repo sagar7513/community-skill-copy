@@ -21,9 +21,11 @@ jobs:
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: ${{ env.AWS_REGION }}
 
-    - name: Login to Amazon ECR
-      id: login-ecr
+    - name: Login to Amazon ECR Public
+      id: login-ecr-public
       uses: aws-actions/amazon-ecr-login@v2
+      with:
+        registry-type: public
 
 
     # --- BACKEND BUILD & PUSH ---
@@ -60,7 +62,7 @@ jobs:
         key: ${{ secrets.EC2_SSH_KEY }}
         script: |
           # Login to ECR on the EC2 host
-          aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin 116715029140.dkr.ecr.ap-south-1.amazonaws.com
+          aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin public.ecr.aws/v2d4y3y5
           
           # Navigate to project directory (where docker-compose.yml lives)
           cd ~/community-skill-exchange

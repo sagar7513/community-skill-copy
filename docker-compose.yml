@@ -18,18 +18,6 @@ services:
     ports:
       - "6379:6379"
 
-  search:
-    image: docker.elastic.co/elasticsearch/elasticsearch:8.13.0
-    container_name: elasticsearch
-    environment:
-      - discovery.type=single-node
-      - ES_JAVA_OPTS=-Xms512m -Xmx512m
-    ports:
-      - "9200:9200"
-    ulimits:
-      memlock:
-        soft: -1
-        hard: -1
 
   backend:
     build: ./backend
@@ -42,7 +30,6 @@ services:
       DB_PASS: skillpass
       DB_NAME: skilldb
       REDIS_HOST: cache
-      ELASTIC_HOST: search
     depends_on:
       - db
       - cache

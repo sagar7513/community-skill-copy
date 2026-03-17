@@ -3,8 +3,8 @@
 # Variables
 REGISTRY="116715029140.dkr.ecr.ap-south-1.amazonaws.com"
 REPO="personal-projects"
-BACKEND_IMAGE="$REGISTRY/$REPO:latest"
-FRONTEND_IMAGE="$REGISTRY/$REPO:latest" # Assuming both use the same repo with latest tags
+BACKEND_IMAGE="$REGISTRY/$REPO-backend:latest"
+FRONTEND_IMAGE="$REGISTRY/$REPO-frontend:latest"
 
 # Login to ECR
 aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin $REGISTRY

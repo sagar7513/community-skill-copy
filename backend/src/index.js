@@ -18,7 +18,7 @@ const pool = new Pool({
 });
 
 const redis = new Redis({
-  host: process.env.REDIS_HOST || 'cache',
+  host: process.env.REDIS_HOST || 'cache', //random comment
   port: 6379,
 });
 

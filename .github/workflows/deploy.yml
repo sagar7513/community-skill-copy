@@ -59,7 +59,7 @@ jobs:
       with:
         host: ${{ secrets.EC2_HOST_KEY_COMMUNITY_SKILL1 }}
         username: "ec2-user"
-        key: ${{ EC2_SSH_KEY_COMMUNITY_SKILL1 }}
+        key: ${{ secrets.EC2_SSH_KEY_COMMUNITY_SKILL1 }}
         script: |
           # Login to ECR on the EC2 host
           aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws/v2d4y3y5

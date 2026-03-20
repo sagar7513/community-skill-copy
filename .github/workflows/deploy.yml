@@ -65,7 +65,7 @@ jobs:
           aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws/v2d4y3y5
           
           # Navigate to project directory (where docker-compose.yml lives)
-          cd ~/community-skill-exchange
+          cd ~/community-skill-copy
           # If repo doesn't exist, clone it; else pull
             echo "Checking git and pulling changes"
             if [ ! -d ".git" ]; then
